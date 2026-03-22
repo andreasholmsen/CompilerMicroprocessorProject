@@ -1,0 +1,45 @@
+12
+15123
+-12
+
+3e6
+-3e6
+30e-1
+-30e-1
+
+13.12
+13214521.32
+.97
+-.97
+
+"hello"
+""
+'h'
+
+3+4
+2-1
+4*3
+12/2
+
+const const_1
+const  
+const const_1, const_2, const_3
+const const_1, const_2, const_3 = 12;
+
+int a
+int
+int x,y = 5;
+int x,y,z = 4;
+
+x
+
+printf(hei);
+
+main(int x) {}
+
+\
+€
+#
+£
+@
+string a

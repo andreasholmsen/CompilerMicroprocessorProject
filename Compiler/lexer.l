@@ -1,11 +1,73 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
+#include "parser.tab.h"
 %}
 
+%option noyywrap
 
-[ \t]+ {}; /* Blank spaces and tablatures are ignored */
+whitespace [ \t\r\n]
+newline [\n]
+letter [a-zA-Z]
+chiffer [0-9]
+alphanum [a-zA-Z0-9]
+alphanumunderscore [a-zA-Z0-9_]
 
-[a-zA-Z][a-zA-Z0-9_]* {return IDENTIFIER;} /* Identifiers (variables) */
+%%
 
-(+|-)?[0-9]+ { yylval = atoi(yytext) ; return NUMBER;} /* Numbers */
+"=" {return tEQ;}
+"+" {return tPLUS;}
+"-" {return tMINUS;}
+"*" {return tMULT;}
+"/" {return tDIV;}
 
+"(" {return tOPAR;}
+")" {return tCPAR;}
+"{" {return tOCURLY;}
+"}" {return tCCURLY;}
+
+void {return tVOID;}
+main {return tMAIN;}
+int {return tINT;}
+const {return tCONST;}
+printf {return tPRINTF;}
+, {return tCOMMA;}
+; {return tSEMIC;}
+
+[+-]?[0-9]+(e|E)[+-]?[0-9]+ { // Exponential integers
+    yylval.nb = (int) strtod(yytext, NULL);
+    return tNUM;
+}
+
+[+-]?[0-9]+ { // Number
+    yylval.nb = atoi(yytext); 
+    return tNUM;
+} 
+
+[a-zA-Z][a-zA-Z0-9_]* {  // Identifiers
+    printf("TOKEN: tID\n");
+    yylval.var = strdup(yytext);
+    return tID;
+}
+
+{whitespace}+ {} /* Blank spaces are ignored */
+
+. {printf("TOKEN: tERROR\n");return tERROR;}
+
+%%
+
+/*
+int main(int argc, char**argv) {
+    if (argc == 2) {
+        yyin = fopen(argv[1], "r");
+    } else {
+        yyin = stdin;
+    }
+    yylex();
+    if (argc == 2) {
+        fclose(yyin);
+    }
+    printf("\n");
+}
+*/
+/* Inspiration from https://courses.cs.umbc.edu/331/papers/lexyacc.pdf */
