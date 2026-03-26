@@ -1,0 +1,11 @@
+int main(void) {
+    const int a,b,c = 4;
+    printf(a);
+
+    a = 2;
+    printf(a);
+
+
+
+
+}

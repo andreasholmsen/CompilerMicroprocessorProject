@@ -9,3 +9,12 @@ extern int values[MAPSIZE];
 void addSymbol(char * key, int value);
 
 int findSymbol(char * key);
+
+void changeSymbol(char * key, int value);
+
+
+void addConst(char * key, int value);
+
+int inKeys(char * key);
+
+int isConstant(char * key);

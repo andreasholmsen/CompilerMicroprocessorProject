@@ -414,11 +414,11 @@ static const YY_CHAR yy_meta[33] =
 
 static const flex_int16_t yy_base[50] =
     {   0,
-        0,    0,   70,   71,   31,   33,   71,   71,   71,   58,
-       71,   57,   71,   26,   71,   71,    0,   42,   42,   48,
-       37,   38,   71,   71,   36,   29,   36,    0,   38,   32,
+        0,    0,   68,   69,   31,   33,   69,   69,   69,   69,
+       69,   69,   69,   26,   69,   69,    0,   42,   42,   48,
+       37,   38,   69,   69,   36,   29,   36,    0,   38,   32,
        38,   37,   36,   46,   45,   27,    0,   30,   29,   33,
-       22,    0,   21,    0,    0,   27,    0,   71,   40
+       22,    0,   21,    0,    0,   27,    0,   69,   40
     } ;
 
 static const flex_int16_t yy_def[50] =
@@ -430,7 +430,7 @@ static const flex_int16_t yy_def[50] =
        49,   49,   49,   49,   49,   49,   49,    0,   48
     } ;
 
-static const flex_int16_t yy_nxt[104] =
+static const flex_int16_t yy_nxt[102] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        14,   15,   16,   17,   17,    4,   17,   18,   17,   17,
@@ -438,15 +438,15 @@ static const flex_int16_t yy_nxt[104] =
        23,   24,   25,   25,   25,   25,   26,   25,   25,   26,
        27,   28,   34,   27,   34,   27,   35,   47,   27,   46,
        45,   44,   43,   42,   41,   35,   35,   40,   39,   38,
-       37,   36,   33,   32,   31,   30,   29,   26,   26,   48,
-        3,   48,   48,   48,   48,   48,   48,   48,   48,   48,
+       37,   36,   33,   32,   31,   30,   29,   48,    3,   48,
+       48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
        48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
        48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
 
-       48,   48,   48
+       48
     } ;
 
-static const flex_int16_t yy_chk[104] =
+static const flex_int16_t yy_chk[102] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -454,12 +454,12 @@ static const flex_int16_t yy_chk[104] =
         1,    1,    5,    5,    6,    6,   14,   25,   25,   26,
        14,   49,   27,   26,   27,   14,   27,   46,   26,   43,
        41,   40,   39,   38,   36,   35,   34,   33,   32,   31,
-       30,   29,   22,   21,   20,   19,   18,   12,   10,    3,
+       30,   29,   22,   21,   20,   19,   18,    3,   48,   48,
        48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
        48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
        48,   48,   48,   48,   48,   48,   48,   48,   48,   48,
 
-       48,   48,   48
+       48
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -481,10 +481,8 @@ char *yytext;
 #include <stdio.h>
 #include <stdlib.h>
 #include "parser.tab.h"
-
-extern FILE *yyin;
-#line 487 "lex.yy.c"
-#line 488 "lex.yy.c"
+#line 485 "lex.yy.c"
+#line 486 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -701,10 +699,10 @@ YY_DECL
 		}
 
 	{
-#line 18 "lexer.l"
+#line 16 "lexer.l"
 
 
-#line 708 "lex.yy.c"
+#line 706 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -737,7 +735,7 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 71 );
+		while ( yy_base[yy_current_state] != 69 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -763,120 +761,125 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "lexer.l"
-{printf("TOKEN: tEQ\n");return tEQ;}
+#line 18 "lexer.l"
+{return tEQ;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "lexer.l"
-{printf("TOKEN: tPLUS\n");return tPLUS;}
+#line 19 "lexer.l"
+{return tPLUS;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "lexer.l"
-{printf("TOKEN: tMINUS\n");return tMINUS;}
+#line 20 "lexer.l"
+{return tMINUS;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 23 "lexer.l"
-{printf("TOKEN: tMULT\n");return tMULT;}
+#line 21 "lexer.l"
+{return tMULT;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 24 "lexer.l"
-{printf("TOKEN: tDIV\n");return tDIV;}
+#line 22 "lexer.l"
+{return tDIV;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 26 "lexer.l"
-{printf("TOKEN: tOPAR\n");return tOPAR;}
+#line 24 "lexer.l"
+{return tOPAR;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 27 "lexer.l"
-{printf("TOKEN: tCPAR\n");return tCPAR;}
+#line 25 "lexer.l"
+{return tCPAR;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 28 "lexer.l"
-{printf("TOKEN: tOCURLY\n");return tOCURLY;}
+#line 26 "lexer.l"
+{return tOCURLY;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 29 "lexer.l"
-{printf("TOKEN: tCCURLY\n");return tCCURLY;}
+#line 27 "lexer.l"
+{return tCCURLY;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 31 "lexer.l"
-{printf("TOKEN: tVOID\n");return tVOID;}
+#line 29 "lexer.l"
+{return tVOID;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 32 "lexer.l"
-{printf("TOKEN: tMAIN\n");return tMAIN;}
+#line 30 "lexer.l"
+{return tMAIN;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 33 "lexer.l"
-{printf("TOKEN: tINT\n");return tINT;}
+#line 31 "lexer.l"
+{return tINT;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 34 "lexer.l"
-{printf("TOKEN: tCONST\n");return tCONST;}
+#line 32 "lexer.l"
+{return tCONST;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 35 "lexer.l"
-{printf("TOKEN: tPRINTF\n");return tPRINTF;}
+#line 33 "lexer.l"
+{return tPRINTF;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 36 "lexer.l"
-{printf("TOKEN: tCOMMA)\n");return tCOMMA;}
+#line 34 "lexer.l"
+{return tCOMMA;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 37 "lexer.l"
-{printf("TOKEN: tSEMIC\n");return tSEMIC;}
+#line 35 "lexer.l"
+{return tSEMIC;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 39 "lexer.l"
-{ // Exponential integers
-    printf("TOKEN: tNUM (exp)\n");
-    yylval.nb = (int) strtod(yytext, NULL);
+#line 38 "lexer.l"
+{ // Exponential integers https://stackoverflow.com/questions/68602795/in-c-code-how-to-convert-string-to-exponential-value
+    yylval.nb = (int) atof(yytext);
     return tNUM;
 }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 44 "lexer.l"
-{printf("TOKEN: tNUM\n"); yylval.nb = atoi(yytext); return tNUM;} // Number
+#line 43 "lexer.l"
+{ // Number
+    yylval.nb = atoi(yytext); 
+    return tNUM;
+} 
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 45 "lexer.l"
-{printf("TOKEN: tID\n");yylval.var = strdup(yytext); return tID;} // Identifiers
+#line 48 "lexer.l"
+{  // Identifiers
+    yylval.var = strdup(yytext);
+    return tID;
+}
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 47 "lexer.l"
+#line 53 "lexer.l"
 {} /* Blank spaces are ignored */
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 49 "lexer.l"
+#line 55 "lexer.l"
 {printf("TOKEN: tERROR\n");return tERROR;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 51 "lexer.l"
+#line 57 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 880 "lex.yy.c"
+#line 883 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1881,7 +1884,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 51 "lexer.l"
+#line 57 "lexer.l"
 
 
 /*

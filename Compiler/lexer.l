@@ -34,18 +34,18 @@ printf {return tPRINTF;}
 , {return tCOMMA;}
 ; {return tSEMIC;}
 
-[+-]?[0-9]+(e|E)[+-]?[0-9]+ { // Exponential integers
-    yylval.nb = (int) strtod(yytext, NULL);
+
+[0-9]+(e|E)[+-]?[0-9]+ { // Exponential integers https://stackoverflow.com/questions/68602795/in-c-code-how-to-convert-string-to-exponential-value
+    yylval.nb = (int) atof(yytext);
     return tNUM;
 }
 
-[+-]?[0-9]+ { // Number
+[0-9]+ { // Number
     yylval.nb = atoi(yytext); 
     return tNUM;
 } 
 
 [a-zA-Z][a-zA-Z0-9_]* {  // Identifiers
-    printf("TOKEN: tID\n");
     yylval.var = strdup(yytext);
     return tID;
 }
