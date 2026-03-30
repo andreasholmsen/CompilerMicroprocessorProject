@@ -14,4 +14,7 @@ int main(void) {
 
     printf(a);
 
+    printf(a*b);
+
+
 }

@@ -36,7 +36,7 @@ void changeSymbol(char * key, int value) {
     }
 
     if (isConstant(key)) {
-        printf("ERROR, trying to change a constant, %s, %d\n", key, value);
+        printf("ERROR, trying to change a constant (%s <- %d) Exiting...\n", key, value);
         exit(1);
     }
 
