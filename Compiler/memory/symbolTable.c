@@ -1,15 +1,18 @@
 #include <stdio.h>
 #include <string.h>
-#include "map.h"
+#include "symbolTable.h"
+#include "stack.h"
 #include <stdlib.h>
 
 
-int ptr = 0;
-char * keys[MAPSIZE];
-int values[MAPSIZE];
 
-int const_ptr = 0;
+int ptr = 0; // Where to add next (key, address) pair
+char * keys[MAPSIZE]; // Contains variable name
+int addresses[MAPSIZE]; // addresses[i] constains address in stack.c to variablename at keys[i]
+
+int const_ptr = 0; // Where to add next constant
 char * const_keys[MAPSIZE];
+
 
 
 
@@ -17,7 +20,7 @@ void addSymbol(char * key, int value) {
     if (ptr >= MAPSIZE) return;
 
     keys[ptr] = strdup(key);
-    values[ptr++] = value;
+    addresses[ptr++] = add(value); // Adds to stack.c
 }
 
 void addConst(char * key, int value) {
@@ -25,6 +28,8 @@ void addConst(char * key, int value) {
 
     const_keys[const_ptr++] = strdup(key);
 }
+
+
 
 
 void changeSymbol(char * key, int value) {
@@ -38,34 +43,35 @@ void changeSymbol(char * key, int value) {
     if (isConstant(key)) {
         printf("ERROR, trying to change a constant (%s <- %d) Exiting...\n", key, value);
         exit(1);
-    }
+    }   
 
-    values[index] = value;
+    insert(addresses[index] ,value); // Insert in stack.c
 }
+
+
 
 int findSymbol(char * key) {
-    for (int i = ptr-1; i >= 0; i--) {
-        if (strcmp(key, keys[i]) == 0) {
-            return values[i];
-        }
-    }
+    for (int i = ptr-1; i >= 0; i--) 
+        if (strcmp(key, keys[i]) == 0) return addresses[i];
+    
+
     return 0;
 }
+
+
 
 int inKeys(char * key) {
-    for (int i = ptr-1; i >= 0; i--) {
-        if (strcmp(key, keys[i]) == 0) {
-            return i;
-        }
-    }
+    for (int i = ptr-1; i >= 0; i--) 
+        if (strcmp(key, keys[i]) == 0) return i;
+
     return 0;
 }
 
+
+
 int isConstant(char * key) {
-    for (int i = const_ptr-1; i >= 0; i--) {
-        if (strcmp(key, const_keys[i]) == 0) {
-            return 1;
-        }
-    }
+    for (int i = const_ptr-1; i >= 0; i--)
+        if (strcmp(key, const_keys[i]) == 0) return 1;
+    
     return 0;
 }

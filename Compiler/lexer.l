@@ -26,6 +26,10 @@ alphanumunderscore [a-zA-Z0-9_]
 "{" {return tOCURLY;}
 "}" {return tCCURLY;}
 
+"<" {return tINF;}
+">" {return tSUP;}
+"==" {return tEQU;}
+
 void {return tVOID;}
 main {return tMAIN;}
 int {return tINT;}
