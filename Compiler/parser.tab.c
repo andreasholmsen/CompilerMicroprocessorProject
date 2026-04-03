@@ -1261,7 +1261,7 @@ yyreduce:
 
   case 23: /* Assignment: tID tEQ Expr  */
 #line 75 "parser.y"
-                               {int val = pop_tmp(); printf("AFC @%d %d\n", atoi((yyvsp[-2].var)), val); changeSymbol( (yyvsp[-2].var), val);}
+                               {int val = pop_tmp(); printf("AFC @%d %d\n", findSymbol((yyvsp[-2].var)), val); changeSymbol( (yyvsp[-2].var), val);}
 #line 1266 "parser.tab.c"
     break;
 
@@ -1273,7 +1273,7 @@ yyreduce:
 
   case 25: /* Declaration: tINT tID tEQ Expr  */
 #line 79 "parser.y"
-                                    { addSymbol((yyvsp[-2].var), (yyvsp[0].nb));}
+                                    {int val = pop_tmp(); addSymbol((yyvsp[-2].var), val); printf("AFC @%d %d\n", findSymbol((yyvsp[-2].var)), val);}
 #line 1278 "parser.tab.c"
     break;
 
@@ -1291,7 +1291,7 @@ yyreduce:
 
   case 28: /* Declaration: tINT VariableList tEQ Expr  */
 #line 82 "parser.y"
-                                             {for (int i = var_ptr-1; i > -1; i--) {addSymbol(varNames[i], (yyvsp[0].nb));} var_ptr = 0;}
+                                             {int val = pop_tmp(); for (int i = var_ptr-1; i > -1; i--) {addSymbol(varNames[i], val); printf("AFC @%d %d\n", findSymbol(varNames[i]), val);} var_ptr = 0;}
 #line 1296 "parser.tab.c"
     break;
 
@@ -1303,7 +1303,7 @@ yyreduce:
 
   case 30: /* Declaration: tCONST tINT VariableList tEQ Expr  */
 #line 84 "parser.y"
-                                                    {for (int i = var_ptr-1; i > -1; i--) {addConst(varNames[i], (yyvsp[0].nb));} var_ptr = 0;}
+                                                    {int val = pop_tmp(); for (int i = var_ptr-1; i > -1; i--) {addConst(varNames[i], val); printf("AFC @%d %d\n", findSymbol(varNames[i]), val);} var_ptr = 0;}
 #line 1308 "parser.tab.c"
     break;
 
@@ -1519,6 +1519,24 @@ int yyparse();
 
 int yyerror(const char *s) { fprintf(stderr, "Syntax Error : %s\n", s); return 1; }
 
+void print_stack() {
+        if (!is_empty()) {
+                int val = pop();
+                print_stack();
+                printf("%d\n", val);
+        }
+        return;
+}
+
+void print_stack_tmp() {
+        if (!is_empty_tmp()) {
+                int val = pop_tmp();
+                print_stack_tmp();
+                printf("%d\n", val);
+        }
+        return;
+}
+
 // https://github.com/black13/flex-and-bison/blob/master/ch04-input_management/03-input_from_strings/main.c
 int main(int argc, char * argv[]) {
         if (argc == 2) {
@@ -1530,6 +1548,17 @@ int main(int argc, char * argv[]) {
         if (argc == 2) {
                 fclose(yyin);
         }
+
+
+        // FOR TESTING
+        printf("\n\n=====GDB DEBUGGING MODE v0.1 =====\n");
+
+        printf("---------------STACK--------------\n");
+        print_stack();
+        printf("---------------TEMP --------------\n");
+        print_stack_tmp();
+
+        printf("=====GDB DEBUGGING DONE =====\n");
 
 return 0;
 }

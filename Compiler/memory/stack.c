@@ -6,13 +6,13 @@
 
 int stack[STACKSIZE];
 int stack_ptr = 0;
-int stack_ptr_tmp = STACKSIZE/2;
+int stack_ptr_tmp = (STACKSIZE/2);
 
 
 // Variables and constants
 
 int is_empty() {
-    return stack_ptr_tmp < 1 ? 1 : 0;
+    return stack_ptr < 1 ? 1 : 0;
 }
 
 int pop() {
@@ -44,17 +44,16 @@ int get(int index) {
 
 
 // Temporary values
-
 int is_empty_tmp() {
-    return stack_ptr_tmp < STACKSIZE/2 +1 ? 1 : 0;
+    return stack_ptr_tmp < (STACKSIZE/2) ? 1 : 0;
 }
 
 int pop_tmp() {
-    return is_empty() ? DEFAULT_VALUE : stack[--stack_ptr_tmp];
+    return is_empty_tmp() ? DEFAULT_VALUE : stack[--stack_ptr_tmp];
 }
 
 int peek_tmp() {
-    return is_empty() ? DEFAULT_VALUE : stack[stack_ptr_tmp];
+    return is_empty_tmp() ? DEFAULT_VALUE : stack[stack_ptr_tmp];
 }
 
 int add_tmp(int value) {

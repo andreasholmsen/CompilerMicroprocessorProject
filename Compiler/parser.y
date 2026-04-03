@@ -72,16 +72,16 @@ Expr    : Term {$$ = $1;}
         | Expr tEQU Expr {$$ = add_tmp(pop_tmp() == pop_tmp() ? 1 : 0);}
         ;
 
-Assignment      : tID tEQ Expr {int val = pop_tmp(); printf("AFC @%d %d\n", atoi($1), val); changeSymbol( $1, val);}
+Assignment      : tID tEQ Expr {int val = pop_tmp(); printf("AFC @%d %d\n", findSymbol($1), val); changeSymbol( $1, val);}
                 ;
 
 Declaration     : tINT tID {addSymbol($2, 32765);}
-                | tINT tID tEQ Expr { addSymbol($2, $4);}
+                | tINT tID tEQ Expr {int val = pop_tmp(); addSymbol($2, val); printf("AFC @%d %d\n", findSymbol($2), val);}
                 | tCONST tINT tID tEQ Expr {addConst($3, $5);}
                 | tINT VariableList {for (int i = var_ptr-1; i > -1; i--) {addSymbol(varNames[i], 32765);} var_ptr = 0;}
-                | tINT VariableList tEQ Expr {for (int i = var_ptr-1; i > -1; i--) {addSymbol(varNames[i], $4);} var_ptr = 0;}
+                | tINT VariableList tEQ Expr {int val = pop_tmp(); for (int i = var_ptr-1; i > -1; i--) {addSymbol(varNames[i], val); printf("AFC @%d %d\n", findSymbol(varNames[i]), val);} var_ptr = 0;}
                 | tCONST tINT VariableList {for (int i = var_ptr-1; i > -1; i--) {addConst(varNames[i], 32765);} var_ptr = 0;}
-                | tCONST tINT VariableList tEQ Expr {for (int i = var_ptr-1; i > -1; i--) {addConst(varNames[i], $5);} var_ptr = 0;}
+                | tCONST tINT VariableList tEQ Expr {int val = pop_tmp(); for (int i = var_ptr-1; i > -1; i--) {addConst(varNames[i], val); printf("AFC @%d %d\n", findSymbol(varNames[i]), val);} var_ptr = 0;}
                 ;
 
 VariableList    : tID tCOMMA VariableList { varNames[var_ptr++] = $1; }
@@ -94,6 +94,24 @@ int yyparse();
 
 int yyerror(const char *s) { fprintf(stderr, "Syntax Error : %s\n", s); return 1; }
 
+void print_stack() {
+        if (!is_empty()) {
+                int val = pop();
+                print_stack();
+                printf("%d\n", val);
+        }
+        return;
+}
+
+void print_stack_tmp() {
+        if (!is_empty_tmp()) {
+                int val = pop_tmp();
+                print_stack_tmp();
+                printf("%d\n", val);
+        }
+        return;
+}
+
 // https://github.com/black13/flex-and-bison/blob/master/ch04-input_management/03-input_from_strings/main.c
 int main(int argc, char * argv[]) {
         if (argc == 2) {
@@ -105,6 +123,17 @@ int main(int argc, char * argv[]) {
         if (argc == 2) {
                 fclose(yyin);
         }
+
+
+        // FOR TESTING
+        printf("\n\n=====GDB DEBUGGING MODE v0.1 =====\n");
+
+        printf("---------------STACK--------------\n");
+        print_stack();
+        printf("---------------TEMP --------------\n");
+        print_stack_tmp();
+
+        printf("=====GDB DEBUGGING DONE =====\n");
 
 return 0;
 }
