@@ -1,16 +1,15 @@
-main() {
-    int a;
-    int b;
-    int c;
-    const int d,e = 314;
-    int f = 8;
-    a = 1;
-    b = 2;
-    c = 3;
+main(){
+    int a = 3;
+    int b = 4;
 
-    if (a==b) {
-        printf(a);
+    if (a) {
+        a = 12;
+    } elsif (b) {
+        b = 13;
     } else {
-        printf(c);
+        a = 14;
+        b = 15;
     }
+    printf(a);
+
 }

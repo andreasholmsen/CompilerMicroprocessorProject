@@ -1,66 +1,35 @@
 #include <stdio.h>
+#include "stack.h"
 
 #define STACKSIZE 1024
-#define DEFAULT_VALUE 32765
 
-
-int stack[STACKSIZE];
-int stack_ptr = 0;
-int stack_ptr_tmp = (STACKSIZE/2);
-
+int stack_ptr = -1;
+int tmp_ptr = (STACKSIZE/2)-1;
 
 // Variables and constants
 
+// Temporary values
 int is_empty() {
-    return stack_ptr < 1 ? 1 : 0;
-}
-
-int pop() {
-    return is_empty() ? DEFAULT_VALUE : stack[--stack_ptr];
+    return stack_ptr < 0 ? 1 : 0;
 }
 
 int peek() {
-    return is_empty() ? DEFAULT_VALUE : stack[stack_ptr];
+    return stack_ptr;
 }
 
-int add(int value) {
-    stack[stack_ptr] = value;
-    return stack_ptr++;
+int new_temp() {
+    return ++tmp_ptr;
 }
 
-void clear() {
-    stack_ptr = 0;
+int new_addr() {
+    return ++stack_ptr;
 }
 
-void insert(int index, int value) {
-    stack[index] = value;
+void free_temp(int a) {
+    if (a >= (STACKSIZE/2) - 1) tmp_ptr--;
 }
 
-int get(int index) {
-    return stack[index];
-}
-
-
-
-
-// Temporary values
-int is_empty_tmp() {
-    return stack_ptr_tmp < (STACKSIZE/2) ? 1 : 0;
-}
-
-int pop_tmp() {
-    return is_empty_tmp() ? DEFAULT_VALUE : stack[--stack_ptr_tmp];
-}
-
-int peek_tmp() {
-    return is_empty_tmp() ? DEFAULT_VALUE : stack[stack_ptr_tmp];
-}
-
-int add_tmp(int value) {
-    stack[stack_ptr_tmp] = value;
-    return stack_ptr_tmp++;
-}
-
-void clear_tmp() {
-    stack_ptr_tmp = STACKSIZE/2;
+void free_temps(int a, int b) {
+    if (a >= (STACKSIZE/2) - 1) tmp_ptr--;
+    if (b >= (STACKSIZE/2) - 1) tmp_ptr--;
 }

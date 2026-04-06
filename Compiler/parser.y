@@ -5,38 +5,48 @@
 #include "parser.tab.h"
 #include "./memory/stack.h"
 
-// For using structures in symbolTable
-extern char * keys[MAPSIZE];
-extern int values[MAPSIZE];
-extern char * const_keys[MAPSIZE];
-
 int yylex(void);
 int yyerror(const char *s);
 
-// For defining multiple variables in one line
-int var_ptr = 0;
-char * varNames[256];
+// Labels for if statements
+int label_ptr = 0;
+int end_labels[1024];
+int end_label = -1;
+#define push_end_label end_labels[++end_label] = label_ptr++
+#define pop_end_label end_labels[end_label--]
+#define peek_end_label end_labels[end_label]
+
+// Writing instruction output
+struct Instruction {
+    int opcode;
+    int a, b, c;
+};
+
+Instruction code[4096];
+int code_ptr = 0;
+#define add_code(inst,res,op1,op2) code[code_ptr++] = (Instruction) {inst, res, op1, op2}
 
 extern FILE *yyin;
 %}
 
-%union { int nb; char * var; }
+%union { int nb; char * var; int addr;}
 %token tEQ tPLUS tMINUS tMULT tDIV
 %token tOPAR tCPAR tOCURLY tCCURLY
 %token tVOID tMAIN tINT 
 %token tCONST tCOMMA tPRINTF tSEMIC
 %token tINF tSUP tEQU
 %token tERROR
+%token tIF tELSE tELSIF
 
+%type <addr> Expr Term
+%type <nb> IfElseStatement IfStatement Cond ElsifStatement
 %token <nb> tNUM
 %token <var> tID
 
-%type <nb> Program Line Expr Term Declaration
 
 %left tEQU tINF tSUP
 %left tPLUS tMINUS
 %left tMULT tDIV
-
 %%
 
 Program : tMAIN tOPAR tVOID tCPAR tOCURLY DeclarationPart tCCURLY {;}
@@ -52,65 +62,78 @@ Block : Line
         ;
 
 Line    : Assignment tSEMIC {;}
-        | tPRINTF tOPAR Expr tCPAR tSEMIC {printf("PRI @%d (%d)\n", $3, get($3));}
+        | tPRINTF tOPAR Expr tCPAR tSEMIC {printf("PRI @%d\n", $3);}
         | tERROR {printf("ERROR\n");}
+        | IfElseStatement {}
         ;
 
-Term    : tNUM {$$ = add_tmp($1);}
-        | tID {$$ = findSymbol($1);}
+IfElseStatement : IfStatement {printf("L%d:\n", pop_end_label);$$ = $1;}
+                | IfStatement ElsifStatements {printf("L%d:\n", pop_end_label);$$ = $1;}
+                | IfStatement ElseStatement {printf("L%d:\n", pop_end_label);$$ = $1;}
+                | IfStatement ElsifStatements ElseStatement {printf("L%d:\n", pop_end_label);$$ = $1;}
+;
+
+IfStatement     : tIF Cond tOCURLY Block tCCURLY {push_end_label; $$ = label_ptr; printf("JMP L%d\n", peek_end_label); printf("L%d:\n", $2); }
+                ;
+
+Cond          : Expr {$$ = label_ptr; printf("JMF @%d L%d\n", $1, label_ptr++);}
+                ;
+
+
+ElsifStatements : ElsifStatements ElsifStatement {}
+                | ElsifStatement {}
+                ;
+
+ElsifStatement  : tELSIF Cond tOCURLY Block tCCURLY {$$ = $2; printf("JMP L%d\n", peek_end_label); printf("L%d:\n", $2);}
+                ;
+
+ElseStatement   : tELSE tOCURLY Block tCCURLY {}
+                ;
+
+
+Term    : tNUM {$$ = new_temp(); printf("AFC @%d %d\n", $$, $1);}
+        | tID {$$ = lookup($1); if ($$ < 0) {printf("Error, symbol unknown. Exiting...\n"); exit(1);}}
         ;
 
 Expr    : Term {$$ = $1;}
-        | Expr tPLUS Expr {printf("ADD @%d @%d @%d\n", $$, $1, $3); $$ = $$= add_tmp(pop_tmp() + pop_tmp()); }    
-        | Expr tMINUS Expr {printf("SOU @%d @%d @%d\n", $$, $1, $3); int val1 = pop_tmp(); $$= add_tmp( pop_tmp() - val1); }
-        | Expr tMULT Expr {printf("MUL @%d @%d @%d\n", $$, $1, $3); $$= add_tmp(pop_tmp() * pop_tmp()); }
-        | Expr tDIV Expr {printf("DIV @%d @%d @%d\n", $$, $1, $3); int val1 = pop_tmp(); $$= add_tmp(pop_tmp() / val1); }
+        | Expr tPLUS Expr {free_temps($1,$3); $$ = new_temp(); printf("ADD @%d @%d @%d\n", $$, $1, $3);}    
+        | Expr tMINUS Expr {free_temps($1,$3); $$ = new_temp(); printf("SOU @%d @%d @%d\n", $$, $1, $3);}
+        | Expr tMULT Expr {free_temps($1,$3); $$ = new_temp(); printf("MUL @%d @%d @%d\n", $$, $1, $3);}
+        | Expr tDIV Expr {free_temps($1,$3); $$ = new_temp(); printf("DIV @%d @%d @%d\n", $$, $1, $3);}
         | tOPAR Expr tCPAR { $$ = $2;}
-        | tMINUS Expr {$$ = add_tmp(-pop_tmp());}
-        | Expr tINF Expr {$$ = add_tmp(pop_tmp() > pop_tmp() ? 1 : 0);}
-        | Expr tSUP Expr {$$ = add_tmp(pop_tmp() < pop_tmp() ? 1 : 0);}
-        | Expr tEQU Expr {$$ = add_tmp(pop_tmp() == pop_tmp() ? 1 : 0);}
+        | tMINUS Expr {free_temp($2); $$ = $2; int temp = new_temp(); printf("AFC @%d 0\n", temp); printf("SOU @%d @%d @%d\n", $2, temp, $2);}
+        | Expr tINF Expr {free_temps($1,$3); $$ = new_temp(); printf("INF @%d @%d @%d\n", $$, $1, $3);}
+        | Expr tSUP Expr {free_temps($1,$3); $$ = new_temp(); printf("SUP @%d @%d @%d\n", $$, $1, $3);}
+        | Expr tEQU Expr {free_temps($1,$3); $$ = new_temp(); printf("EQU @%d @%d @%d\n", $$, $1, $3);}
         ;
 
-Assignment      : tID tEQ Expr {int val = pop_tmp(); printf("AFC @%d %d\n", findSymbol($1), val); changeSymbol( $1, val);}
+Assignment      : tID tEQ Expr {free_temp($3); int addr = lookup($1); 
+                                if (isConst(addr)) {printf("ERROR, editing const. Exiting...\n"); exit(1);}  
+                                printf("COP @%d @%d\n", lookup($1), $3);
+                                };
+
+Declaration     : tINT DeclaratorList {}
+                | tCONST tINT ConstDeclaratorList {}
                 ;
 
-Declaration     : tINT tID {addSymbol($2, 32765);}
-                | tINT tID tEQ Expr {int val = pop_tmp(); addSymbol($2, val); printf("AFC @%d %d\n", findSymbol($2), val);}
-                | tCONST tINT tID tEQ Expr {addConst($3, $5);}
-                | tINT VariableList {for (int i = var_ptr-1; i > -1; i--) {addSymbol(varNames[i], 32765);} var_ptr = 0;}
-                | tINT VariableList tEQ Expr {int val = pop_tmp(); for (int i = var_ptr-1; i > -1; i--) {addSymbol(varNames[i], val); printf("AFC @%d %d\n", findSymbol(varNames[i]), val);} var_ptr = 0;}
-                | tCONST tINT VariableList {for (int i = var_ptr-1; i > -1; i--) {addConst(varNames[i], 32765);} var_ptr = 0;}
-                | tCONST tINT VariableList tEQ Expr {int val = pop_tmp(); for (int i = var_ptr-1; i > -1; i--) {addConst(varNames[i], val); printf("AFC @%d %d\n", findSymbol(varNames[i]), val);} var_ptr = 0;}
+DeclaratorList  : Declarator
+                | Declarator tCOMMA DeclaratorList
                 ;
 
-VariableList    : tID tCOMMA VariableList { varNames[var_ptr++] = $1; }
-                | tID tCOMMA tID { varNames[var_ptr++] = $1; varNames[var_ptr++] = $3; }
+Declarator      : tID {addSymbol($1, 0);}
+                | tID tEQ Expr {free_temp($3); addSymbol($1, 0); printf("COP @%d @%d\n", lookup($1), $3);}
                 ;
 
+ConstDeclaratorList     : ConstDeclarator
+                        | ConstDeclarator tCOMMA ConstDeclaratorList
+                        ;
+
+ConstDeclarator: tID tEQ Expr {free_temp($3); addSymbol($1, 1);printf("COP @%d @%d\n", lookup($1), $3);};
 
 %%
 int yyparse();
 
 int yyerror(const char *s) { fprintf(stderr, "Syntax Error : %s\n", s); return 1; }
-
-void print_stack() {
-        if (!is_empty()) {
-                int val = pop();
-                print_stack();
-                printf("%d\n", val);
-        }
-        return;
-}
-
-void print_stack_tmp() {
-        if (!is_empty_tmp()) {
-                int val = pop_tmp();
-                print_stack_tmp();
-                printf("%d\n", val);
-        }
-        return;
-}
 
 // https://github.com/black13/flex-and-bison/blob/master/ch04-input_management/03-input_from_strings/main.c
 int main(int argc, char * argv[]) {
@@ -119,21 +142,12 @@ int main(int argc, char * argv[]) {
         } else {
                 yyin = stdin;
         }
+
         yyparse();
+
         if (argc == 2) {
                 fclose(yyin);
         }
-
-
-        // FOR TESTING
-        printf("\n\n=====GDB DEBUGGING MODE v0.1 =====\n");
-
-        printf("---------------STACK--------------\n");
-        print_stack();
-        printf("---------------TEMP --------------\n");
-        print_stack_tmp();
-
-        printf("=====GDB DEBUGGING DONE =====\n");
 
 return 0;
 }

@@ -39,6 +39,11 @@ printf {return tPRINTF;}
 ; {return tSEMIC;}
 
 
+if {return tIF;}
+else {return tELSE;}
+elsif {return tELSIF;}
+
+
 [0-9]+(e|E)[+-]?[0-9]+ { // Exponential integers https://stackoverflow.com/questions/68602795/in-c-code-how-to-convert-string-to-exponential-value
     yylval.nb = (int) atof(yytext);
     return tNUM;
