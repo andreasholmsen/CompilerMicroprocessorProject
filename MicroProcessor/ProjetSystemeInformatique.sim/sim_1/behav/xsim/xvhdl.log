@@ -1,0 +1,4 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/Users/login/Documents/GitHub/CompilerMicroprocessorProject/MicroProcessor/ProjetSystemeInformatique.srcs/sources_1/new/ALU.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'ALU'
+INFO: [VRFC 10-163] Analyzing VHDL file "C:/Users/login/Documents/GitHub/CompilerMicroprocessorProject/MicroProcessor/ProjetSystemeInformatique.srcs/sim_1/new/ALUTb.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'ALUTb'
