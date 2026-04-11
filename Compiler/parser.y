@@ -18,10 +18,9 @@ int end_ptr = -1;
 
 // Writing instruction output
 struct Instruction {
-    char code;
-    int a, b, c;
+        char code;
+        int a, b, c;
 };
-
 struct Instruction code[4096];
 int code_ptr = 0;
 #define add_code(inst,res,op1,op2) code[code_ptr++]=(struct Instruction){inst, res, op1, op2}
