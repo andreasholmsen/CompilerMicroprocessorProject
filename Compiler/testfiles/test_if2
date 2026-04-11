@@ -1,0 +1,16 @@
+main() {
+    int a = 3;
+
+    if (a+2 == 5) {
+        if(a > 0) {
+            printf(a);
+        } else {
+            a = 1;
+        }
+    } elsif (a) {
+        printf(a);
+    }
+
+    printf(a);
+
+}

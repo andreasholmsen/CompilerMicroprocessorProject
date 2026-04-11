@@ -1,0 +1,18 @@
+main() {
+    int a = 3;
+
+    while (a < 5) {
+        if (a > 6) {
+            a = 2;
+        } else {
+            a = a+1;
+        }
+
+        while (a > 100) {
+            a = a - 10;
+        }
+    }
+
+    printf(a);
+
+}
