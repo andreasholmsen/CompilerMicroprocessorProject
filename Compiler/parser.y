@@ -41,6 +41,7 @@ extern FILE *yyin;
 %token tERROR
 %token tIF tELSE tELSIF
 %token tWHILE
+%token tSTAR tADDR
 
 %type <addr> Expr Term
 %type <nb> IfElseStatement IfStatement Cond ElsifStatement
@@ -116,6 +117,8 @@ Expr    : Term {$$ = $1;}
         | Expr tINF Expr {free_temps($1,$3); $$ = new_temp(); add_code('9', $$, $1, $3);}
         | Expr tSUP Expr {free_temps($1,$3); $$ = new_temp(); add_code('A', $$, $1, $3);}
         | Expr tEQU Expr {free_temps($1,$3); $$ = new_temp(); add_code('B', $$, $1, $3);}
+        | tADDR Expr {free_temp($2); $$ = new_temp(); add_code('6', $$, $2, 0);}
+        | tSTAR Expr {free_temp($2); $$ = new_temp(); add_code('5', $$, $2, 0);}
         ;
 
 Assignment      : tID tEQ Expr {free_temp($3); int addr = lookup($1); 

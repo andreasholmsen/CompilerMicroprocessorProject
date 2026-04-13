@@ -78,8 +78,10 @@ extern int yydebug;
     tELSE = 279,                   /* tELSE  */
     tELSIF = 280,                  /* tELSIF  */
     tWHILE = 281,                  /* tWHILE  */
-    tNUM = 282,                    /* tNUM  */
-    tID = 283                      /* tID  */
+    tSTAR = 282,                   /* tSTAR  */
+    tADDR = 283,                   /* tADDR  */
+    tNUM = 284,                    /* tNUM  */
+    tID = 285                      /* tID  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -88,10 +90,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 36 "parser.y"
+#line 35 "parser.y"
  int nb; char * var; int addr;
 
-#line 95 "parser.tab.h"
+#line 97 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

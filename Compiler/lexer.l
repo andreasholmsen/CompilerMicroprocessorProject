@@ -6,13 +6,6 @@
 
 %option noyywrap
 
-whitespace [ \t\r\n]
-newline [\n]
-letter [a-zA-Z]
-chiffer [0-9]
-alphanum [a-zA-Z0-9]
-alphanumunderscore [a-zA-Z0-9_]
-
 %%
 
 "=" {return tEQ;}
@@ -45,6 +38,9 @@ elsif {return tELSIF;}
 
 while {return tWHILE;}
 
+@ {return tSTAR;}
+& {return tADDR;}
+
 [0-9]+(e|E)[+-]?[0-9]+ { // Exponential integers https://stackoverflow.com/questions/68602795/in-c-code-how-to-convert-string-to-exponential-value
     yylval.nb = (int) atof(yytext);
     return tNUM;
@@ -60,7 +56,7 @@ while {return tWHILE;}
     return tID;
 }
 
-{whitespace}+ {} /* Blank spaces are ignored */
+[ \t\r\n]+ {} /* Blank spaces are ignored */
 
 . {printf("TOKEN: tERROR\n");return tERROR;}
 

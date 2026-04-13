@@ -1,0 +1,9 @@
+main() {
+    int a = 3; // a  =3
+    int b = &a; // b = addr of a
+    int c = *b; // c  = value at addr stored in b
+
+    printf(c);
+
+
+}
