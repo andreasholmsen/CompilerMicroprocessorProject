@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "stack.h"
 
-#define STACKSIZE 1024
+#define STACKSIZE 512
 
 int stack_ptr = -1;
 int tmp_ptr = (STACKSIZE/2)-1;
